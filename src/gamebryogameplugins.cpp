@@ -50,16 +50,36 @@ void GamebryoGamePlugins::readPluginLists(MOBase::IPluginList *pluginList) {
 
   if (loadOrderIsNew || !pluginsIsNew) {
     // read both files if they are both new or both older than the last read
-    readLoadOrderList(pluginList, loadOrderPath);
-    readPluginList(pluginList, pluginsPath, false);
+    QStringList loadOrder = readLoadOrderList(pluginList, loadOrderPath);
+    pluginList->setLoadOrder(loadOrder);
+    readPluginList(pluginList, pluginsPath);
   } else {
     // if the plugin list is new but the load order isn't, this probably means
     // an external tool that handles only the plugins.txt has been run in the
     // meantime. We have to use plugins.txt for the load order as well.
-    readPluginList(pluginList, pluginsPath, true);
+    QStringList loadOrder = readPluginList(pluginList, pluginsPath);
+    pluginList->setLoadOrder(loadOrder);
   }
 
   m_LastRead = QDateTime::currentDateTime();
+}
+
+void GamebryoGamePlugins::getLoadOrder(QStringList &loadOrder) {
+  QString loadOrderPath =
+    organizer()->profile()->absolutePath() + "/loadorder.txt";
+  QString pluginsPath = organizer()->profile()->absolutePath() + "/plugins.txt";
+
+  bool loadOrderIsNew = !m_LastRead.isValid() ||
+    !QFileInfo(loadOrderPath).exists() ||
+    QFileInfo(loadOrderPath).lastModified() > m_LastRead;
+  bool pluginsIsNew = !m_LastRead.isValid() ||
+    QFileInfo(pluginsPath).lastModified() > m_LastRead;
+
+  if (loadOrderIsNew || !pluginsIsNew) {
+    loadOrder = readLoadOrderList(m_Organizer->pluginList(), loadOrderPath);
+  } else {
+    loadOrder = readPluginList(m_Organizer->pluginList(), pluginsPath);
+  }
 }
 
 void GamebryoGamePlugins::writePluginList(const MOBase::IPluginList *pluginList,
@@ -123,8 +143,7 @@ void GamebryoGamePlugins::writeList(const IPluginList *pluginList,
   }
 }
 
-bool GamebryoGamePlugins::readLoadOrderList(MOBase::IPluginList *pluginList,
-                                            const QString &filePath) {
+QStringList GamebryoGamePlugins::readLoadOrderList(MOBase::IPluginList *pluginList, const QString &filePath) {
   QStringList pluginNames = organizer()->managedGame()->primaryPlugins();
   QFile file(filePath);
   if (!file.open(QIODevice::ReadOnly)) {
@@ -151,7 +170,7 @@ bool GamebryoGamePlugins::readLoadOrderList(MOBase::IPluginList *pluginList,
     if (file.size() == 0) {
       // MO stores at least a header in the file. if it's completely empty the
       // file is broken
-      return false;
+      return pluginNames;
     }
     while (!file.atEnd()) {
       QByteArray line = file.readLine().trimmed();
@@ -167,19 +186,17 @@ bool GamebryoGamePlugins::readLoadOrderList(MOBase::IPluginList *pluginList,
       }
     }
   }
-  pluginList->setLoadOrder(pluginNames);
 
-  return true;
+  return pluginNames;
 }
 
-bool GamebryoGamePlugins::readPluginList(MOBase::IPluginList *pluginList,
-                                         const QString &filePath,
-                                         bool useLoadOrder) {
+QStringList GamebryoGamePlugins::readPluginList(MOBase::IPluginList *pluginList,
+                                         const QString &filePath) {
   QStringList plugins = pluginList->pluginNames();
 
   QFile file(filePath);
   if (!file.open(QIODevice::ReadOnly)) {
-    return false;
+    return plugins;
   }
   ON_BLOCK_EXIT([&]() {
     qDebug("close %s", qPrintable(filePath));
@@ -189,7 +206,7 @@ bool GamebryoGamePlugins::readPluginList(MOBase::IPluginList *pluginList,
   if (file.size() == 0) {
     // MO stores at least a header in the file. if it's completely empty the
     // file is broken
-    return false;
+    return plugins;
   }
 
   QStringList loadOrder;
@@ -213,9 +230,5 @@ bool GamebryoGamePlugins::readPluginList(MOBase::IPluginList *pluginList,
     pluginList->setState(pluginName, IPluginList::STATE_INACTIVE);
   }
 
-  if (useLoadOrder) {
-    pluginList->setLoadOrder(loadOrder);
-  }
-
-  return true;
+  return loadOrder;
 }

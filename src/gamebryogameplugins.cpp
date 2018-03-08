@@ -143,37 +143,39 @@ void GamebryoGamePlugins::writeList(const IPluginList *pluginList,
   }
 }
 
-QStringList GamebryoGamePlugins::readLoadOrderList(MOBase::IPluginList *pluginList, const QString &filePath) {
-  QStringList pluginNames = organizer()->managedGame()->primaryPlugins();
-  QFile file(filePath);
-  if (!file.open(QIODevice::ReadOnly)) {
-    return readPluginList(pluginList, filePath);
-  } else {
-    ON_BLOCK_EXIT([&file]() { file.close(); });
+QStringList GamebryoGamePlugins::readLoadOrderList(MOBase::IPluginList *pluginList,
+                                            const QString &filePath) {
+    QStringList pluginNames = organizer()->managedGame()->primaryPlugins();
+    QFile file(filePath);
+    if (!file.open(QIODevice::ReadOnly)) {
+        return readPluginList(pluginList);
+    } else {
+        QStringList pluginNames = organizer()->managedGame()->primaryPlugins();
 
-    if (file.size() == 0) {
-      return readPluginList(pluginList, filePath);
-    }
-    while (!file.atEnd()) {
-      QByteArray line = file.readLine().trimmed();
-      QString modName;
-      if ((line.size() > 0) && (line.at(0) != '#')) {
-        modName = QString::fromUtf8(line.constData()).toLower();
-      }
+        ON_BLOCK_EXIT([&file]() { file.close(); });
 
-      if (modName.size() > 0) {
-        if (!pluginNames.contains(modName, Qt::CaseInsensitive)) {
-          pluginNames.append(modName);
+        if (file.size() == 0) {
+          return readPluginList(pluginList);
         }
-      }
-    }
-  }
+        while (!file.atEnd()) {
+            QByteArray line = file.readLine().trimmed();
+            QString modName;
+            if ((line.size() > 0) && (line.at(0) != '#')) {
+                modName = QString::fromUtf8(line.constData()).toLower();
+            }
 
-  return pluginNames;
+            if (modName.size() > 0) {
+                if (!pluginNames.contains(modName, Qt::CaseInsensitive)) {
+                    pluginNames.append(modName);
+                }
+            }
+        }
+
+        return pluginNames;
+    }
 }
 
-QStringList GamebryoGamePlugins::readPluginList(MOBase::IPluginList *pluginList,
-                                         const QString &filePath) {
+QStringList GamebryoGamePlugins::readPluginList(MOBase::IPluginList *pluginList) {
   QStringList primary = organizer()->managedGame()->primaryPlugins();
   for (const QString &pluginName : primary) {
       if (pluginList->state(pluginName) != IPluginList::STATE_MISSING) {
@@ -249,5 +251,5 @@ QStringList GamebryoGamePlugins::readPluginList(MOBase::IPluginList *pluginList,
       }
   }
 
-  return loadOrder;
+  return primary + plugins;
 }

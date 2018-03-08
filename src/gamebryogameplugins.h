@@ -28,8 +28,7 @@ protected:
                                   const QString &filePath);
   virtual QStringList readLoadOrderList(MOBase::IPluginList *pluginList,
                                  const QString &filePath);
-  virtual QStringList readPluginList(MOBase::IPluginList *pluginList,
-                              const QString &filePath);
+  virtual QStringList readPluginList(MOBase::IPluginList *pluginList);
 
 protected:
   MOBase::IOrganizer *m_Organizer;

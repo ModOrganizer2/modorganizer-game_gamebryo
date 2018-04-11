@@ -50,11 +50,13 @@ void GamebryoGamePlugins::readPluginLists(MOBase::IPluginList *pluginList) {
 
   if (loadOrderIsNew || !pluginsIsNew) {
     // read both files if they are both new or both older than the last read
-    readLoadOrderList(pluginList, loadOrderPath);
-    readPluginList(pluginList, false);
+    QStringList loadOrder = readLoadOrderList(pluginList, loadOrderPath);
+    pluginList->setLoadOrder(loadOrder);
+    readPluginList(pluginList, pluginsPath);
   } else {
-    // If the plugins is new but not loadorder, we must reparse the load order from the plugin files
-    readPluginList(pluginList, true);
+      // If the plugins is new but not loadorder, we must reparse the load order from the plugin files
+    QStringList loadOrder = readPluginList(pluginList, pluginsPath);
+    pluginList->setLoadOrder(loadOrder);
   }
 
   m_LastRead = QDateTime::currentDateTime();

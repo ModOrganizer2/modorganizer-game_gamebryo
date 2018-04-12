@@ -222,6 +222,7 @@ QStringList GamebryoGamePlugins::readPluginList(MOBase::IPluginList *pluginList)
   }
 
   QStringList activePlugins;
+  QStringList inactivePlugins;
   if (pluginsTxtExists) {
       while (!file.atEnd()) {
           QByteArray line = file.readLine();
@@ -231,13 +232,19 @@ QStringList GamebryoGamePlugins::readPluginList(MOBase::IPluginList *pluginList)
           }
           if (pluginName.size() > 0) {
               pluginList->setState(pluginName, IPluginList::STATE_ACTIVE);
-              plugins.removeAll(pluginName);
               activePlugins.push_back(pluginName);
           }
       }
 
       // we removed each plugin found in the file, so what's left are inactive mods
-      for (const QString &pluginName : plugins) {
+      for (const QString &pluginName : activePlugins) {
+        if (!activePlugins.contains(pluginName)) {
+          inactivePlugins.push_back(pluginName);
+          plugins.removeAll(pluginName);
+        }
+      }
+
+      for (const QString &pluginName : inactivePlugins) {
           pluginList->setState(pluginName, IPluginList::STATE_INACTIVE);
       }
   } else {
@@ -246,5 +253,5 @@ QStringList GamebryoGamePlugins::readPluginList(MOBase::IPluginList *pluginList)
       }
   }
 
-  return primary + activePlugins + plugins;
+  return primary + plugins + inactivePlugins;
 }

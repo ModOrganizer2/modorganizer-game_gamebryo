@@ -52,12 +52,10 @@ void GamebryoGamePlugins::readPluginLists(MOBase::IPluginList *pluginList) {
     // read both files if they are both new or both older than the last read
     QStringList loadOrder = readLoadOrderList(pluginList, loadOrderPath);
     pluginList->setLoadOrder(loadOrder);
-    readPluginList(pluginList, pluginsPath);
+    readPluginList(pluginList);
   } else {
-    // if the plugin list is new but the load order isn't, this probably means
-    // an external tool that handles only the plugins.txt has been run in the
-    // meantime. We have to use plugins.txt for the load order as well.
-    QStringList loadOrder = readPluginList(pluginList, pluginsPath);
+      // If the plugins is new but not loadorder, we must reparse the load order from the plugin files
+    QStringList loadOrder = readPluginList(pluginList);
     pluginList->setLoadOrder(loadOrder);
   }
 
@@ -78,7 +76,7 @@ void GamebryoGamePlugins::getLoadOrder(QStringList &loadOrder) {
   if (loadOrderIsNew || !pluginsIsNew) {
     loadOrder = readLoadOrderList(m_Organizer->pluginList(), loadOrderPath);
   } else {
-    loadOrder = readPluginList(m_Organizer->pluginList(), pluginsPath);
+    loadOrder = readPluginList(m_Organizer->pluginList());
   }
 }
 

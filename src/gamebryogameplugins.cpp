@@ -143,7 +143,6 @@ void GamebryoGamePlugins::writeList(const IPluginList *pluginList,
 
 QStringList GamebryoGamePlugins::readLoadOrderList(MOBase::IPluginList *pluginList,
                                             const QString &filePath) {
-    QStringList pluginNames = organizer()->managedGame()->primaryPlugins();
     QFile file(filePath);
     if (!file.open(QIODevice::ReadOnly)) {
         return readPluginList(pluginList);

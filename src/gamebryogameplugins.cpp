@@ -237,10 +237,10 @@ QStringList GamebryoGamePlugins::readPluginList(MOBase::IPluginList *pluginList)
       }
 
       for (const QString &pluginName : plugins)
-        if (!activePlugins.contains(pluginName))
-          inactivePlugins.push_back(pluginName);
+          if (!activePlugins.contains(pluginName))
+              inactivePlugins.push_back(pluginName);
 
-      for (const QString &pluginName : inactivePlugins)
+      for (const QString &pluginName : inactivePlugins) {
           pluginList->setState(pluginName, IPluginList::STATE_INACTIVE);
   } else {
       for (const QString &pluginName : plugins) {

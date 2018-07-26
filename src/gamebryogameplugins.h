@@ -34,10 +34,6 @@ protected:
   MOBase::IOrganizer *m_Organizer;
   QDateTime m_LastRead;
 
-protected:
-
-  QDateTime m_LastRead;
-
 private:
   void writeList(const MOBase::IPluginList *pluginList, const QString &filePath,
                  bool loadOrder);

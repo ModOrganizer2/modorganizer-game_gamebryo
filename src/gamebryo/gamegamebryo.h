@@ -80,6 +80,7 @@ public: // IPluginGame interface
   virtual bool looksValid(QDir const &) const override;
   virtual QString gameVersion() const override;
   virtual QString getLauncherName() const override;
+  virtual QString getSupportURL() const override;
 
 public: // IPluginFileMapper interface
 

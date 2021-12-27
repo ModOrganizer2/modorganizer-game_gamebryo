@@ -167,6 +167,11 @@ QString GameGamebryo::getLauncherName() const
   return gameShortName() + "Launcher.exe";
 }
 
+QString GameGamebryo::getSupportURL() const
+{
+  return QStringLiteral("");
+}
+
 WORD GameGamebryo::getArch(QString const &program) const
 {
 	WORD arch = 0;

@@ -19,6 +19,7 @@ protected:
   const GameGamebryo *game() const { return m_Game; }
 private:
   const GameGamebryo *m_Game;
+  QString escapeModName(QString modName) const;
 
 };
 

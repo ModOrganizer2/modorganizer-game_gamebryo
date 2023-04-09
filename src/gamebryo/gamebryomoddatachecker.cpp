@@ -9,12 +9,7 @@
  */
 auto GamebryoModDataChecker::possibleFolderNames() const -> const FileNameSet& {
   static FileNameSet result{
-    "fonts", "interface", "menus", "meshes", "music", "scripts", "shaders",
-    "sound", "strings", "textures", "trees", "video", "facegen", "materials",
-    "skse", "obse", "mwse", "nvse", "fose", "f4se", "distantlod", "asi",
-    "SkyProc Patchers", "Tools", "MCM", "icons", "bookart", "distantland",
-    "mits", "splash", "dllplugins", "CalienteTools", "NetScriptFramework",
-    "shadersfx"
+    "fonts", "interface", "menus", "meshes", "music", "scripts", "shaders", "sound", "strings", "textures", "trees", "video", "facegen", "materials", "skse", "obse", "mwse", "nvse", "fose", "f4se", "distantlod", "asi", "SkyProc Patchers", "Tools", "MCM", "icons", "bookart", "distantland", "mits", "splash", "dllplugins", "CalienteTools", "shadersfx", "BashTags", "Root", "grass", "Nemesis_Engine", "WeaponStyles"
   };
   return result;
 }

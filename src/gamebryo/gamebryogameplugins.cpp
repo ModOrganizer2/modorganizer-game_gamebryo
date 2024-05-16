@@ -168,17 +168,28 @@ QStringList GamebryoGamePlugins::readLoadOrderList(MOBase::IPluginList* pluginLi
 QStringList GamebryoGamePlugins::readPluginList(MOBase::IPluginList* pluginList)
 {
   QStringList primary = organizer()->managedGame()->primaryPlugins();
+  QStringList dlc = organizer()->managedGame()->DLCPlugins();
+
   for (const QString& pluginName : primary) {
     if (pluginList->state(pluginName) != IPluginList::STATE_MISSING) {
       pluginList->setState(pluginName, IPluginList::STATE_ACTIVE);
     }
   }
+
   QStringList plugins = pluginList->pluginNames();
   QStringList pluginsClone(plugins);
+
   // Do not sort the primary plugins. Their load order should be locked as defined in
   // "primaryPlugins".
   for (const auto& plugin : pluginsClone) {
     if (primary.contains(plugin, Qt::CaseInsensitive))
+      plugins.removeAll(plugin);
+  }
+
+  // Do not sort dlc plugins, we want to retain the load order as defined by the dlc
+  // plugins list
+  for (const auto& plugin : pluginsClone) {
+    if (dlc.contains(plugin, Qt::CaseInsensitive))
       plugins.removeAll(plugin);
   }
 
@@ -244,7 +255,7 @@ QStringList GamebryoGamePlugins::readPluginList(MOBase::IPluginList* pluginList)
     }
   }
 
-  return primary + plugins;
+  return primary + dlc + plugins;
 }
 
 bool GamebryoGamePlugins::lightPluginsAreSupported()

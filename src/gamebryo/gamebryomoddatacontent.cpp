@@ -94,7 +94,7 @@ std::vector<int> GamebryoModDataContent::getContentsFor(
     }
   }
 
-  auto* extender = m_GameFeatures->gameFeature<MOBase::ScriptExtender>();
+  auto extender = m_GameFeatures->gameFeature<MOBase::ScriptExtender>();
   if (extender != nullptr) {
     auto e = fileTree->findDirectory(extender->PluginPath());
     if (e) {

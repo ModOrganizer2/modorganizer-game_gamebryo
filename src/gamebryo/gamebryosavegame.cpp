@@ -60,8 +60,7 @@ QStringList GamebryoSaveGame::allFiles() const
 {
   // This returns all valid files associated with this game
   QStringList res = {m_FileName};
-  auto const* e =
-      m_Game->m_Organizer->gameFeatures()->gameFeature<MOBase::ScriptExtender>();
+  auto e = m_Game->m_Organizer->gameFeatures()->gameFeature<MOBase::ScriptExtender>();
   if (e != nullptr) {
     QFileInfo file(m_FileName);
     QFileInfo SEfile(file.absolutePath() + "/" + file.completeBaseName() + "." +

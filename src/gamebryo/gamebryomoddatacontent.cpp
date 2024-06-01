@@ -1,8 +1,7 @@
 #include "gamebryomoddatacontent.h"
 
+#include <igamefeatures.h>
 #include <scriptextender.h>
-
-#include "imoinfo.h"
 
 GamebryoModDataContent::GamebryoModDataContent(
     MOBase::IGameFeatures const* gameFeatures)

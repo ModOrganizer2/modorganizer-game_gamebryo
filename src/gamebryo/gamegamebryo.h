@@ -22,6 +22,7 @@ class UnmanagedMods;
 #include <memory>
 
 #include "gamebryosavegame.h"
+#include "igamefeatures.h"
 
 class GameGamebryo : public MOBase::IPluginGame, public MOBase::IPluginFileMapper
 {

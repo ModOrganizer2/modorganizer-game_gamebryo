@@ -23,9 +23,10 @@
 #define CHUNK 16384
 
 GamebryoSaveGame::GamebryoSaveGame(QString const& file, GameGamebryo const* game,
-                                   bool const lightEnabled)
+                                   bool const lightEnabled, bool const mediumEnabled)
     : m_FileName(file), m_CreationTime(QFileInfo(file).lastModified()), m_Game(game),
-      m_LightEnabled(lightEnabled), m_DataFields([this]() {
+      m_MediumEnabled(mediumEnabled), m_LightEnabled(lightEnabled),
+      m_DataFields([this]() {
         return fetchDataFields();
       })
 {}
@@ -508,7 +509,9 @@ float_t GamebryoSaveGame::FileWrapper::readFloat(int bytesToIgnore)
   }
 }
 
-QStringList GamebryoSaveGame::FileWrapper::readPlugins(int bytesToIgnore)
+QStringList GamebryoSaveGame::FileWrapper::readPlugins(int bytesToIgnore,
+                                                       bool extraData,
+                                                       QStringList corePlugins)
 {
   QStringList plugins;
   if (m_CompressionType == 0) {
@@ -533,12 +536,25 @@ QStringList GamebryoSaveGame::FileWrapper::readPlugins(int bytesToIgnore)
       QString name;
       read(name);
       plugins.push_back(name);
+      if (extraData && !corePlugins.contains(name)) {
+        QString creationName;
+        QString creationId;
+        uint16_t flagsSize;
+        uint8_t isCreation;
+        read(creationName);
+        read(creationId);
+        readQDataStream(*m_Data, flagsSize);
+        skipQDataStream(*m_Data, flagsSize);
+        readQDataStream(*m_Data, isCreation);
+      }
     }
   }
   return plugins;
 }
 
-QStringList GamebryoSaveGame::FileWrapper::readLightPlugins(int bytesToIgnore)
+QStringList GamebryoSaveGame::FileWrapper::readLightPlugins(int bytesToIgnore,
+                                                            bool extraData,
+                                                            QStringList corePlugins)
 {
   QStringList plugins;
   if (m_CompressionType == 0) {
@@ -554,7 +570,6 @@ QStringList GamebryoSaveGame::FileWrapper::readLightPlugins(int bytesToIgnore)
     }
   } else if (m_CompressionType == 1 || m_CompressionType == 2) {
     skipQDataStream(*m_Data, bytesToIgnore);
-
     uint16_t count;
     readQDataStream(*m_Data, count);
     plugins.reserve(count);
@@ -562,6 +577,49 @@ QStringList GamebryoSaveGame::FileWrapper::readLightPlugins(int bytesToIgnore)
       QString name;
       read(name);
       plugins.push_back(name);
+      if (extraData && !corePlugins.contains(name)) {
+        QString creationName;
+        QString creationId;
+        uint16_t flagsSize;
+        uint8_t isCreation;
+        read(creationName);
+        read(creationId);
+        readQDataStream(*m_Data, flagsSize);
+        skipQDataStream(*m_Data, flagsSize);
+        readQDataStream(*m_Data, isCreation);
+      }
+    }
+  }
+  return plugins;
+}
+
+QStringList GamebryoSaveGame::FileWrapper::readMediumPlugins(int bytesToIgnore,
+                                                             bool extraData,
+                                                             QStringList corePlugins)
+{
+  QStringList plugins;
+  if (m_CompressionType != 2) {
+    return {};
+  } else {
+    skipQDataStream(*m_Data, bytesToIgnore);
+    uint32_t count;
+    readQDataStream(*m_Data, count);
+    plugins.reserve(count);
+    for (std::size_t i = 0; i < count; ++i) {
+      QString name;
+      read(name);
+      plugins.push_back(name);
+      if (extraData && !corePlugins.contains(name)) {
+        QString creationName;
+        QString creationId;
+        uint16_t flagsSize;
+        uint8_t isCreation;
+        read(creationName);
+        read(creationId);
+        readQDataStream(*m_Data, flagsSize);
+        skipQDataStream(*m_Data, flagsSize);
+        readQDataStream(*m_Data, isCreation);
+      }
     }
   }
   return plugins;

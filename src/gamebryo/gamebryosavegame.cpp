@@ -598,7 +598,7 @@ QStringList GamebryoSaveGame::FileWrapper::readMediumPlugins(int bytesToIgnore,
                                                              QStringList corePlugins)
 {
   QStringList plugins;
-  if (m_CompressionType != 2) {
+  if (m_CompressionType != 1) {
     return {};
   } else {
     skipQDataStream(*m_Data, bytesToIgnore);

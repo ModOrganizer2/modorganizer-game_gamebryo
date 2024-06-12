@@ -168,15 +168,15 @@ protected:
 
     /* Read the plugin list */
     QStringList readPlugins(int bytesToIgnore = 0, bool extraData = false,
-                            QStringList corePlugins = {});
+                            const QStringList corePlugins = {});
 
     /* Read the light plugin list */
     QStringList readLightPlugins(int bytesToIgnore = 0, bool extraData = false,
-                                 QStringList corePlugins = {});
+                                 const QStringList corePlugins = {});
 
     /* Read the medium plugin list */
     QStringList readMediumPlugins(int bytesToIgnore = 0, bool extraData = false,
-                                  QStringList corePlugins = {});
+                                  const QStringList corePlugins = {});
 
     void close();
 
@@ -197,6 +197,9 @@ protected:
     void readQDataStream(QDataStream& data, void* buff, std::size_t length);
 
     void skipQDataStream(QDataStream& data, std::size_t length);
+
+    QStringList readPluginData(uint32_t count, bool extraData,
+                               const QStringList corePlugins);
   };
 
   void setCreationTime(_SYSTEMTIME const& time);

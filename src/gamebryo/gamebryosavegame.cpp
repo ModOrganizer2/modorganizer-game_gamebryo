@@ -511,7 +511,7 @@ float_t GamebryoSaveGame::FileWrapper::readFloat(int bytesToIgnore)
 
 QStringList GamebryoSaveGame::FileWrapper::readPlugins(int bytesToIgnore,
                                                        bool extraData,
-                                                       const QStringList corePlugins)
+                                                       const QStringList& corePlugins)
 {
   if (m_CompressionType == 0) {
     if (bytesToIgnore > 0)  // Just to make certain
@@ -528,9 +528,9 @@ QStringList GamebryoSaveGame::FileWrapper::readPlugins(int bytesToIgnore,
   return {};
 }
 
-QStringList GamebryoSaveGame::FileWrapper::readLightPlugins(int bytesToIgnore,
-                                                            bool extraData,
-                                                            const QStringList corePlugins)
+QStringList
+GamebryoSaveGame::FileWrapper::readLightPlugins(int bytesToIgnore, bool extraData,
+                                                const QStringList& corePlugins)
 {
   if (m_CompressionType == 0) {
     if (bytesToIgnore > 0)  // Just to make certain
@@ -547,9 +547,9 @@ QStringList GamebryoSaveGame::FileWrapper::readLightPlugins(int bytesToIgnore,
   return {};
 }
 
-QStringList GamebryoSaveGame::FileWrapper::readMediumPlugins(int bytesToIgnore,
-                                                             bool extraData,
-                                                             const QStringList corePlugins)
+QStringList
+GamebryoSaveGame::FileWrapper::readMediumPlugins(int bytesToIgnore, bool extraData,
+                                                 const QStringList& corePlugins)
 {
   if (m_CompressionType != 1) {
     return {};

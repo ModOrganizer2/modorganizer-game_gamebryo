@@ -168,15 +168,15 @@ protected:
 
     /* Read the plugin list */
     QStringList readPlugins(int bytesToIgnore = 0, bool extraData = false,
-                            const QStringList corePlugins = {});
+                            const QStringList& corePlugins = {});
 
     /* Read the light plugin list */
     QStringList readLightPlugins(int bytesToIgnore = 0, bool extraData = false,
-                                 const QStringList corePlugins = {});
+                                 const QStringList& corePlugins = {});
 
     /* Read the medium plugin list */
     QStringList readMediumPlugins(int bytesToIgnore = 0, bool extraData = false,
-                                  const QStringList corePlugins = {});
+                                  const QStringList& corePlugins = {});
 
     void close();
 

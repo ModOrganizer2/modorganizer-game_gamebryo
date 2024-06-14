@@ -26,8 +26,6 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 
 #include "gamegamebryo.h"
 
-static const QString LocalSavesDummy = "__MO_Saves\\";
-
 GamebryoLocalSavegames::GamebryoLocalSavegames(const GameGamebryo* game,
                                                const QString& iniFileName)
     : m_Game{game}, m_IniFileName(iniFileName)
@@ -39,9 +37,14 @@ MappingType GamebryoLocalSavegames::mappings(const QDir& profileSaveDir) const
            true}};
 }
 
+QString GamebryoLocalSavegames::localSavesDummy() const
+{
+  return "__MO_Saves\\";
+}
+
 QDir GamebryoLocalSavegames::localSavesDirectory() const
 {
-  return QDir(m_Game->myGamesPath()).absoluteFilePath(LocalSavesDummy);
+  return QDir(m_Game->myGamesPath()).absoluteFilePath(localSavesDummy());
 }
 
 QDir GamebryoLocalSavegames::localGameDirectory() const
@@ -64,7 +67,7 @@ bool GamebryoLocalSavegames::prepareProfile(MOBase::IProfile* profile)
   GetPrivateProfileStringW(L"General", L"sLocalSavePath", L"SKIP_ME", currentPath,
                            MAX_PATH, iniFilePath.toStdWString().c_str());
   bool alreadyEnabled =
-      wcscmp(currentPath, LocalSavesDummy.toStdWString().c_str()) == 0;
+      wcscmp(currentPath, localSavesDummy().toStdWString().c_str()) == 0;
 
   // Get the current bUseMyGamesDirectory
   WCHAR currentMyGames[MAX_PATH];
@@ -92,7 +95,7 @@ bool GamebryoLocalSavegames::prepareProfile(MOBase::IProfile* profile)
                                  saveIni.toStdWString().c_str());
     }
     MOBase::WriteRegistryValue(L"General", L"sLocalSavePath",
-                               LocalSavesDummy.toStdWString().c_str(),
+                               localSavesDummy().toStdWString().c_str(),
                                iniFilePath.toStdWString().c_str());
     MOBase::WriteRegistryValue(L"General", L"bUseMyGamesDirectory", L"1",
                                iniFilePath.toStdWString().c_str());

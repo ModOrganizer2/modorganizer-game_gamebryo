@@ -36,6 +36,13 @@ public:
   virtual bool prepareProfile(MOBase::IProfile* profile) override;
 
 protected:
+  // return the path from the local game directory to the local saves folder
+  //
+  // this is virtual so game plugins for complete game overhauld (Enderal, Nehrim, etc.)
+  // can override it properly
+  //
+  virtual QString localSavesDummy() const;
+
   QDir localSavesDirectory() const;
   QDir localGameDirectory() const;
 

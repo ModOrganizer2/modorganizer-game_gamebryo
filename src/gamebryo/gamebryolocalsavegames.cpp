@@ -24,25 +24,38 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 #include <string>
 #include <windows.h>
 
+#include "gamegamebryo.h"
+
 static const QString LocalSavesDummy = "__MO_Saves\\";
 
-GamebryoLocalSavegames::GamebryoLocalSavegames(const QDir& myGamesDir,
+GamebryoLocalSavegames::GamebryoLocalSavegames(const GameGamebryo* game,
                                                const QString& iniFileName)
-    : m_LocalSavesDir(myGamesDir.absoluteFilePath(LocalSavesDummy)),
-      m_LocalGameDir(myGamesDir.absolutePath()), m_IniFileName(iniFileName)
+    : m_Game{game}, m_IniFileName(iniFileName)
 {}
 
 MappingType GamebryoLocalSavegames::mappings(const QDir& profileSaveDir) const
 {
-  return {{profileSaveDir.absolutePath(), m_LocalSavesDir.absolutePath(), true, true}};
+  return {{profileSaveDir.absolutePath(), localSavesDirectory().absolutePath(), true,
+           true}};
+}
+
+QDir GamebryoLocalSavegames::localSavesDirectory() const
+{
+  return QDir(m_Game->myGamesPath()).absoluteFilePath(LocalSavesDummy);
+}
+
+QDir GamebryoLocalSavegames::localGameDirectory() const
+{
+  return QDir(m_Game->myGamesPath()).absolutePath();
 }
 
 bool GamebryoLocalSavegames::prepareProfile(MOBase::IProfile* profile)
 {
   bool enable = profile->localSavesEnabled();
 
-  QString basePath    = profile->localSettingsEnabled() ? profile->absolutePath()
-                                                        : m_LocalGameDir.absolutePath();
+  QString basePath    = profile->localSettingsEnabled()
+                            ? profile->absolutePath()
+                            : localGameDirectory().absolutePath();
   QString iniFilePath = basePath + "/" + m_IniFileName;
   QString saveIni     = profile->absolutePath() + "/" + "savepath.ini";
 
@@ -61,7 +74,7 @@ bool GamebryoLocalSavegames::prepareProfile(MOBase::IProfile* profile)
 
   // Create the __MO_Saves directory if local saves are enabled and it doesn't exist
   if (enable) {
-    QDir saves = QDir(m_LocalGameDir.absolutePath() + "/" + LocalSavesDummy);
+    QDir saves = localSavesDirectory();
     if (!saves.exists()) {
       saves.mkdir(".");
     }

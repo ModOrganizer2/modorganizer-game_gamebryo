@@ -24,18 +24,23 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 #include <QDir>
 #include <QString>
 
+class GameGamebryo;
+
 class GamebryoLocalSavegames : public MOBase::LocalSavegames
 {
 
 public:
-  GamebryoLocalSavegames(const QDir& myGamesDir, const QString& iniFileName);
+  GamebryoLocalSavegames(const GameGamebryo* game, const QString& iniFileName);
 
   virtual MappingType mappings(const QDir& profileSaveDir) const override;
   virtual bool prepareProfile(MOBase::IProfile* profile) override;
 
+protected:
+  QDir localSavesDirectory() const;
+  QDir localGameDirectory() const;
+
 private:
-  QDir m_LocalSavesDir;
-  QDir m_LocalGameDir;
+  const GameGamebryo* m_Game;
   QString m_IniFileName;
 };
 

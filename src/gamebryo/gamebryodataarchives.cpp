@@ -9,6 +9,11 @@
 
 GamebryoDataArchives::GamebryoDataArchives(const GameGamebryo* game) : m_Game{game} {}
 
+QDir GamebryoDataArchives::gameDirectory() const
+{
+  return QDir(m_Game->gameDirectory()).absolutePath();
+}
+
 QDir GamebryoDataArchives::localGameDirectory() const
 {
   return QDir(m_Game->myGamesPath()).absolutePath();

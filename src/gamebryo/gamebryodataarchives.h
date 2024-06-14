@@ -19,6 +19,7 @@ public:
                              const QString& archiveName) override;
 
 protected:
+  QDir gameDirectory() const;
   QDir localGameDirectory() const;
 
   QStringList getArchivesFromKey(const QString& iniFile, const QString& key,

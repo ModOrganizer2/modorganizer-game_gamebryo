@@ -509,8 +509,7 @@ float_t GamebryoSaveGame::FileWrapper::readFloat(int bytesToIgnore)
   }
 }
 
-QStringList GamebryoSaveGame::FileWrapper::readPlugins(int bytesToIgnore,
-                                                       bool extraData,
+QStringList GamebryoSaveGame::FileWrapper::readPlugins(int bytesToIgnore, int extraData,
                                                        const QStringList& corePlugins)
 {
   if (m_CompressionType == 0) {
@@ -529,7 +528,7 @@ QStringList GamebryoSaveGame::FileWrapper::readPlugins(int bytesToIgnore,
 }
 
 QStringList
-GamebryoSaveGame::FileWrapper::readLightPlugins(int bytesToIgnore, bool extraData,
+GamebryoSaveGame::FileWrapper::readLightPlugins(int bytesToIgnore, int extraData,
                                                 const QStringList& corePlugins)
 {
   if (m_CompressionType == 0) {
@@ -548,7 +547,7 @@ GamebryoSaveGame::FileWrapper::readLightPlugins(int bytesToIgnore, bool extraDat
 }
 
 QStringList
-GamebryoSaveGame::FileWrapper::readMediumPlugins(int bytesToIgnore, bool extraData,
+GamebryoSaveGame::FileWrapper::readMediumPlugins(int bytesToIgnore, int extraData,
                                                  const QStringList& corePlugins)
 {
   if (m_CompressionType != 1) {
@@ -561,8 +560,7 @@ GamebryoSaveGame::FileWrapper::readMediumPlugins(int bytesToIgnore, bool extraDa
   }
 }
 
-QStringList GamebryoSaveGame::FileWrapper::readPluginData(uint32_t count,
-                                                          bool extraData,
+QStringList GamebryoSaveGame::FileWrapper::readPluginData(uint32_t count, int extraData,
                                                           const QStringList corePlugins)
 {
   QStringList plugins;
@@ -578,16 +576,24 @@ QStringList GamebryoSaveGame::FileWrapper::readPluginData(uint32_t count,
       QString name;
       read(name);
       plugins.push_back(name);
-      if (extraData && !corePlugins.contains(name)) {
-        QString creationName;
-        QString creationId;
-        uint16_t flagsSize;
-        uint8_t isCreation;
-        read(creationName);
-        read(creationId);
-        readQDataStream(*m_Data, flagsSize);
-        skipQDataStream(*m_Data, flagsSize);
-        readQDataStream(*m_Data, isCreation);
+      bool isCustomPlugin;
+      if (extraData) {
+        if (extraData > 1) {
+          readQDataStream(*m_Data, isCustomPlugin);
+        } else {
+          isCustomPlugin = !corePlugins.contains(name);
+        }
+        if (isCustomPlugin) {
+          QString creationName;
+          QString creationId;
+          uint16_t flagsSize;
+          uint8_t isCreation;
+          read(creationName);
+          read(creationId);
+          readQDataStream(*m_Data, flagsSize);
+          skipQDataStream(*m_Data, flagsSize);
+          readQDataStream(*m_Data, isCreation);
+        }
       }
     }
   }

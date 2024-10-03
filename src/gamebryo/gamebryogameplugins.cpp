@@ -246,13 +246,3 @@ QStringList GamebryoGamePlugins::readPluginList(MOBase::IPluginList* pluginList)
 
   return primary + plugins;
 }
-
-bool GamebryoGamePlugins::lightPluginsAreSupported()
-{
-  return false;
-}
-
-bool GamebryoGamePlugins::mediumPluginsAreSupported()
-{
-  return false;
-}

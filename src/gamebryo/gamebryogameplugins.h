@@ -33,9 +33,6 @@ protected:
 private:
   void writeList(const MOBase::IPluginList* pluginList, const QString& filePath,
                  bool loadOrder);
-
-private:
-  std::map<QString, QByteArray> m_LastSaveHash;
 };
 
 #endif  // GAMEBRYOGAMEPLUGINS_H

@@ -20,6 +20,7 @@
 #include <QFileInfo>
 #include <QIcon>
 #include <QJsonDocument>
+#include <QJsonValue>
 
 #include <QtDebug>
 #include <QtGlobal>

@@ -137,7 +137,7 @@ void GamebryoGamePlugins::writeList(const IPluginList* pluginList,
     qWarning("plugin list would be empty, this is almost certainly wrong. Not "
              "saving.");
   } else {
-    file.commitIfDifferent(m_LastSaveHash[filePath]);
+    file->commit();
   }
 }
 

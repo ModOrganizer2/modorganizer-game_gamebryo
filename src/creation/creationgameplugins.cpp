@@ -100,7 +100,7 @@ void CreationGamePlugins::writePluginList(const IPluginList* pluginList,
                             "and rename them."));
   }
 
-  file.commitIfDifferent(m_LastSaveHash[filePath]);
+  file->commit();
 }
 
 QStringList CreationGamePlugins::readPluginList(MOBase::IPluginList* pluginList)
